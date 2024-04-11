@@ -37,12 +37,8 @@ public class CarDAO {
         } catch (Exception e) {
 
             System.out.println("falha ao cadastrar os carros de DB");
-
-
-
         }
     }
-
 
     public List<Car> findAllCars() {
 
@@ -62,10 +58,10 @@ public class CarDAO {
 
             while (resultSet.next()) {
 
+                String carId = resultSet.getString("id");
                 String carName = resultSet.getString("name");
 
-                Car car = new Car();
-                car.setName(carName);
+                Car car = new Car(carId, carName);
 
                 cars.add(car);
 
@@ -83,6 +79,30 @@ public class CarDAO {
 
             return Collections.emptyList();
 
+        }
+
+    }
+    public void deleteCarById(String carId) {
+
+        String SQL = "DELETE CAR WHERE ID = ?";
+
+        try {
+
+            Connection connection = DriverManager.getConnection("jdbc:h2:~/test", "sa", "sa");
+
+            System.out.println("success in database connection");
+
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, carId);
+            preparedStatement.execute();
+
+            System.out.println("success on delete car with id: " + carId);
+
+            connection.close();
+
+        } catch (Exception e) {
+
+            System.out.println("falha ao conectar com o banco de dados");
         }
     }
 }
